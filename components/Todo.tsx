@@ -1,6 +1,7 @@
+import { TodoType } from "@/typings";
 import { FaRegTrashAlt } from "react-icons/fa";
 
-export function Todo({ todo }: { todo: string }) {
+export function Todo({ todo }: { todo: TodoType }) {
   return (
     <li>
       <div className="flex flex-col">
@@ -12,7 +13,7 @@ export function Todo({ todo }: { todo: string }) {
                 name="todo"
                 className="form-checkbox rounded text-green-500"
               />
-              <p>{todo}</p>
+              <p>{todo.title}</p>
             </div>
             <button>
               <FaRegTrashAlt size={15} />

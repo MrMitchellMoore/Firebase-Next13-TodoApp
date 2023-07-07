@@ -1,11 +1,24 @@
 "use client";
 
 import { Todo } from "@/components/Todo";
+import { TodoType } from "@/typings";
 import { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 
 export default function Home() {
-  const [todos, setTodos] = useState(["Learn React", "Learn Leet Code"]);
+  const [todos, setTodos] = useState<Array<TodoType>>([
+    { id: "1", title: "Learn React", completed: false },
+    { id: "2", title: "Learn Leet Code", completed: false },
+  ]);
+
+  // TODO create todo
+
+  // TODO read todo
+
+  // TODO update todo
+
+  // TODO delete todo
+
   return (
     <>
       <div className="max-w-full flex justify-center mx-2">
@@ -26,8 +39,8 @@ export default function Home() {
             </form>
             <div>
               <ul>
-                {todos.map((todo, i) => (
-                  <Todo key={i} todo={todo} />
+                {todos.map((todo) => (
+                  <Todo key={todo.id} todo={todo} />
                 ))}
               </ul>
             </div>
