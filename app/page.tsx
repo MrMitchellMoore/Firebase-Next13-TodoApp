@@ -7,24 +7,38 @@ import {
   collection,
   DocumentData,
   QueryDocumentSnapshot,
-  getDocs,
-  CollectionReference,
   SnapshotOptions,
   FieldPath,
   onSnapshot,
   query,
+  updateDoc,
+  addDoc,
+  doc,
 } from "firebase/firestore";
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 
 export default function Home() {
+  const [input, setInput] = useState("");
   const [todos, setTodos] = useState<
     QueryDocumentSnapshot<DocumentData, TodoType>[]
   >([]);
 
   // TODO create todo
+  const createTodo = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (input === "") {
+      alert("Please enter a valid todo!");
+      return;
+    }
+    await addDoc(collection(db, "todos"), {
+      title: input,
+      completed: false,
+    });
+    setInput("");
+  };
 
-  // TODO read todo
+  // read todo
   useEffect(() => {
     const q = query(collection(db, "todos"));
     const unsubscribe = onSnapshot(q, (querySnapShot) => {
@@ -54,7 +68,14 @@ export default function Home() {
     return () => unsubscribe();
   }, []);
 
-  // TODO update todo
+  // update todo
+  const toggleComplete = async (todo: TodoType) => {
+    // @ts-ignore
+    const result = await updateDoc(doc(db, "todos", todo.id), {
+      completed: !todo.completed,
+    });
+    return result;
+  };
 
   // TODO delete todo
 
@@ -66,8 +87,13 @@ export default function Home() {
             <h3 className="text-4xl text-center font-bold my-1 text-gray-800">
               Todo App
             </h3>
-            <form className="flex justify-center items-center gap-2 mb-2">
+            <form
+              onSubmit={createTodo}
+              className="flex justify-center items-center gap-2 mb-2"
+            >
               <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
                 type="text"
                 className="form-input rounded-md w-full"
                 placeholder="Add Todo"
@@ -79,12 +105,16 @@ export default function Home() {
             <div>
               <ul>
                 {todos.map((todo) => (
-                  <Todo key={todo.id} todo={todo} />
+                  <Todo
+                    key={todo.id}
+                    todo={todo}
+                    toggleComplete={toggleComplete}
+                  />
                 ))}
               </ul>
             </div>
           </div>
-          <p className="text-2xl font-bold">You have 2 todos</p>
+          <p className="text-2xl font-bold">You have {todos.length} todos</p>
         </div>
       </div>
     </>
