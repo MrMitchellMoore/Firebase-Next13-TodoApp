@@ -1,19 +1,38 @@
 "use client";
 
 import { Todo } from "@/components/Todo";
+import { db } from "@/lib/firebase";
 import { TodoType } from "@/typings";
-import { useState } from "react";
+import {
+  collection,
+  DocumentData,
+  QueryDocumentSnapshot,
+  getDocs,
+} from "firebase/firestore";
+import { useState, useEffect } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 
 export default function Home() {
-  const [todos, setTodos] = useState<Array<TodoType>>([
-    { id: "1", title: "Learn React", completed: false },
-    { id: "2", title: "Learn Leet Code", completed: false },
-  ]);
+  const [todos, setTodos] = useState<
+    QueryDocumentSnapshot<DocumentData, TodoType>[]
+  >([]);
 
   // TODO create todo
 
   // TODO read todo
+
+  useEffect(() => {
+    const getTodos = async () => {
+      const querySnapshot = await getDocs(collection(db, "todos"));
+      let newTodos: any = [];
+      querySnapshot.forEach((doc) => {
+        newTodos.push({ ...doc.data(), id: doc.id });
+      });
+      setTodos(newTodos);
+    };
+
+    getTodos();
+  }, []);
 
   // TODO update todo
 
