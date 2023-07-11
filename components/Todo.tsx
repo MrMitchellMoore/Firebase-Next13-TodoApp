@@ -13,9 +13,10 @@ const style = {
 type TodoProps = {
   todo: TodoType;
   toggleComplete: (todo: TodoType) => {};
+  deleteTodo: (todo: TodoType) => {};
 };
 
-export function Todo({ todo, toggleComplete }: TodoProps) {
+export function Todo({ todo, toggleComplete, deleteTodo }: TodoProps) {
   return (
     <li className={todo.completed ? style.liComplete : style.li}>
       <div className="flex flex-col">
@@ -37,7 +38,7 @@ export function Todo({ todo, toggleComplete }: TodoProps) {
                 {todo.title}
               </p>
             </div>
-            <button>
+            <button onClick={() => deleteTodo(todo)}>
               <FaRegTrashAlt size={15} />
             </button>
           </div>

@@ -13,6 +13,7 @@ import {
   query,
   updateDoc,
   addDoc,
+  deleteDoc,
   doc,
 } from "firebase/firestore";
 import { useState, useEffect, FormEvent } from "react";
@@ -78,7 +79,10 @@ export default function Home() {
   };
 
   // TODO delete todo
-
+  const deleteTodo = async (todo: TodoType) => {
+    // @ts-ignore
+    return await deleteDoc(doc(db, "todos", todo.id));
+  };
   return (
     <>
       <div className="max-w-full flex justify-center mx-2">
@@ -109,12 +113,15 @@ export default function Home() {
                     key={todo.id}
                     todo={todo}
                     toggleComplete={toggleComplete}
+                    deleteTodo={deleteTodo}
                   />
                 ))}
               </ul>
             </div>
           </div>
-          <p className="text-2xl font-bold">You have {todos.length} todos</p>
+          {todos.length < 1 ? null : (
+            <p className="text-2xl font-bold">You have {todos.length} todos</p>
+          )}
         </div>
       </div>
     </>
